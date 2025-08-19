@@ -86,7 +86,7 @@ on delete cascade
  fecha_de_pago datetime default now(),
  monto decimal(10,3) not null,
  metodo_de_pago enum('tarjeta_de_credito', 'tarjeta_de_debito', 'billetera_virtual', 'efectivo') not null,
- estado enum ('pendiente', 'aprobado', 'rechadazo') default 'pendiente',
+ estado enum ('pendiente', 'aprobado', 'rechazado') default 'pendiente',
  foreign key (orden_id) references ordenes(orden_id)
  on update cascade
  on delete cascade
@@ -110,7 +110,7 @@ on delete cascade
 );
 
 
-create table comentrarios(
+create table comentarios(
 comentario_id int not null auto_increment primary key,
 producto_id int not null,
 usuario_id int not null,
