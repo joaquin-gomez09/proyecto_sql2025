@@ -124,3 +124,66 @@ foreign key (usuario_id) references usuarios (usuario_id)
 on update cascade
 on delete cascade
 );
+
+INSERT INTO usuarios (nombre, apellido, email, contraseña, celular)
+VALUES 
+('Roboute', 'Guilliman', 'guilliman@imperium.com', 'ultramarine123', '1122334455'),
+('Abaddon', 'El Saqueador', 'abaddon@chaos.net', 'warmaster666', '1199887766'),
+('Inquisidora', 'Greyfax', 'greyfax@ordohereticus.org', 'purgeHeretics!', '1133445566');
+
+INSERT INTO roles (rol_nombre)
+VALUES 
+('Cliente'),
+('Administrador'),
+('Vendedor');
+
+INSERT INTO categorias (nombre_de_categoria, descripcion)
+VALUES 
+('Miniaturas', 'Figuras coleccionables de ejércitos del universo Warhammer 40K'),
+('Accesorios', 'Dados, reglas, medidores y otros elementos para jugar'),
+('Libros', 'Novelas y códices oficiales del lore de Warhammer 40K');
+
+INSERT INTO productos (vendedor_id, categorias_id, nombres_productos, descripcion, precio)
+VALUES 
+(1, 1, 'Ultramarines Primaris Squad', 'Unidad de élite de los Marines Espaciales', 49.99000),
+(2, 1, 'Chaos Space Marines', 'Tropa básica de los Marines del Caos', 44.50000),
+(3, 2, 'Dados Imperiales', 'Set de dados temáticos del Imperio', 15.00000),
+(1, 3, 'Codex: Adeptus Astartes', 'Libro de reglas y trasfondo de los Marines Espaciales', 35.00000);
+
+INSERT INTO inventario (producto_id, cantidad_disponible)
+VALUES 
+(1, 10),
+(2, 8),
+(3, 25),
+(4, 12);
+
+INSERT INTO ordenes (usuario_id, total, estado)
+VALUES 
+(1, 84.99, 'pagada'),
+(2, 44.50, 'pendiente'),
+(3, 35.00, 'completada');
+
+INSERT INTO detalle_orden (orden_id, producto_id, cantidad, precio_unitario)
+VALUES 
+(1, 1, 1, 49.99),
+(1, 3, 1, 15.00),
+(2, 2, 1, 44.50),
+(3, 4, 1, 35.00);
+
+INSERT INTO pagos (orden_id, monto, metodo_de_pago, estado)
+VALUES 
+(1, 84.990, 'tarjeta_de_credito', 'aprobado'),
+(2, 44.500, 'efectivo', 'pendiente'),
+(3, 35.000, 'billetera_virtual', 'aprobado');
+
+INSERT INTO envios (orden_id, direccion_envio, ciudad, provincia, codigo_postal)
+VALUES 
+(1, 'Av. Terra 40K #123', 'Macragge', 'Ultramar', '0001'),
+(2, 'Fortaleza Negra S/N', 'Cadia', 'Segmentum Obscurus', '6666'),
+(3, 'Templo de la Purga #77', 'Terra', 'Segmentum Solar', '1000');
+
+INSERT INTO comentarios (producto_id, usuario_id, calificacion, opinion)
+VALUES 
+(1, 2, 5, 'Excelente calidad, aunque odio a los Ultramarines.'),
+(2, 1, 4, 'Buen detalle, pero el caos no es lo mío.'),
+(4, 3, 5, 'El códex está muy completo y bien ilustrado.');
