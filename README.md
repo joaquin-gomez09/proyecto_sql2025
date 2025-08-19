@@ -132,3 +132,4 @@ Este proyecto define la estructura de una base de datos para una tienda especial
 
 Crear una base de datos robusta, escalable y especializada para una tienda de Warhammer 40K que permita una gestión eficiente de productos, clientes, ventas y promociones, mejorando la experiencia del usuario y facilitando la administración interna.
 
+
