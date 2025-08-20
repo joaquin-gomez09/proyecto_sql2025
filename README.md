@@ -1,135 +1,193 @@
-# 🧱 Modelo de Base de Datos: Tienda de Figuras de Warhammer 40K
+# 🧱 Modelo de Base de Datos: Tienda Online Warhammer 40K
 
-Este proyecto define la estructura de una base de datos para una tienda especializada en productos del universo Warhammer 40K. Está diseñada para gestionar productos, clientes, pedidos, pagos, reseñas y funcionalidades avanzadas como fidelización, promociones y control de inventario.
+Este proyecto define la estructura de una base de datos relacional en **MySQL** para una tienda especializada en productos del universo **Warhammer 40K**. Está diseñada para gestionar usuarios, roles, productos, inventario, órdenes, pagos, envíos y reseñas, con integridad referencial y escalabilidad.
 
 ---
 
 ## 🔹 Tablas Principales
 
-### 1. Productos
-- `id_producto` (PK)
-- `nombre`
+### 1. `usuarios`
+Gestión de clientes, vendedores y administradores.
+
+- `usuario_id` (PK)  
+- `nombre`  
+- `apellido`  
+- `email`  
+- `contraseña`  
+- `celular`  
+- `fecha_de_registro`  
+- `activo`  
+
+### 2. `roles`
+Define los tipos de usuario.
+
+- `rol_id` (PK)  
+- `rol_nombre` (Ej: Cliente, Vendedor, Administrador)
+
+### 3. `categorias`
+Clasificación de productos.
+
+- `categorias_id` (PK)  
+- `nombre_de_categoria`  
 - `descripcion`
-- `precio`
-- `stock`
-- `id_faccion` (FK)
-- `id_categoria` (FK)
-- `id_marca` (FK)
-- `imagen_url`
-- `edicion_limitada` (booleano)
-- `id_expansion` (FK)
-- `puntos_fidelidad`
 
-### 2. Categorías
-- `id_categoria` (PK)
-- `nombre` (Ej: Miniatura, Pintura, Accesorio, Libro de reglas)
+### 4. `productos`
+Catálogo de artículos disponibles.
 
-### 3. Marcas
-- `id_marca` (PK)
-- `nombre` (Ej: Games Workshop, Citadel, Forge World)
+- `producto_id` (PK)  
+- `vendedor_id` (FK → usuarios)  
+- `categorias_id` (FK → categorias)  
+- `nombres_productos`  
+- `descripcion`  
+- `precio`  
+- `fecha_de_publicacion`  
+- `activo`
 
-### 4. Facciones
-- `id_faccion` (PK)
-- `nombre` (Ej: Space Marines, Orkos, Tyranids, Necrons, etc.)
+### 5. `inventario`
+Control de stock por producto.
 
-### 5. Clientes
-- `id_cliente` (PK)
-- `nombre`
-- `email`
-- `telefono`
-- `direccion_envio`
-- `fecha_registro`
-- `puntos_acumulados`
-- `fecha_ultima_compra`
+- `inventario_id` (PK)  
+- `producto_id` (FK → productos)  
+- `cantidad_disponible`  
+- `ultima_actualizacion`
 
-### 6. Pedidos
-- `id_pedido` (PK)
-- `id_cliente` (FK)
-- `fecha_pedido`
-- `estado` (Ej: pendiente, enviado, cancelado)
-- `total`
-- `id_usuario` (FK)
-- `codigo_tracking`
+### 6. `ordenes`
+Registro de compras realizadas.
 
-### 7. Detalle_Pedido
-- `id_detalle` (PK)
-- `id_pedido` (FK)
-- `id_producto` (FK)
-- `cantidad`
-- `precio_unitario`
-- `descuento_aplicado`
+- `orden_id` (PK)  
+- `usuario_id` (FK → usuarios)  
+- `fecha_orden`  
+- `total`  
+- `estado` (pendiente, pagada, enviada, completada, cancelada)
 
-### 8. Métodos_de_Pago
-- `id_metodo` (PK)
-- `nombre` (Ej: Efectivo, Tarjeta, Transferencia, MercadoPago)
+### 7. `detalle_orden`
+Detalle de cada producto en una orden.
 
-### 9. Pagos
-- `id_pago` (PK)
-- `id_pedido` (FK)
-- `id_metodo` (FK)
-- `monto`
-- `fecha_pago`
+- `detalle_id` (PK)  
+- `orden_id` (FK → ordenes)  
+- `producto_id` (FK → productos)  
+- `cantidad`  
+- `precio_unitario`  
+- `subtotal` (calculado automáticamente)
 
-### 10. Reseñas
-- `id_reseña` (PK)
-- `id_producto` (FK)
-- `id_cliente` (FK)
-- `comentario`
-- `puntuacion` (1 a 5)
-- `fecha`
+### 8. `pagos`
+Información de transacciones.
+
+- `pago_id` (PK)  
+- `orden_id` (FK → ordenes)  
+- `fecha_de_pago`  
+- `monto`  
+- `metodo_de_pago` (tarjeta_de_credito, tarjeta_de_debito, billetera_virtual, efectivo)  
+- `estado` (pendiente, aprobado, rechazado)
+
+### 9. `envios`
+Datos logísticos de entrega.
+
+- `envio_id` (PK)  
+- `orden_id` (FK → ordenes)  
+- `direccion_envio`  
+- `ciudad`  
+- `provincia`  
+- `codigo_postal`  
+- `pais`  
+- `fecha_de_envio`  
+- `fecha_de_entrega_estimada`  
+- `estado` (pendiente, en camino, entregado, cancelado)
+
+### 10. `comentarios`
+Reseñas de productos por parte de los usuarios.
+
+- `comentario_id` (PK)  
+- `producto_id` (FK → productos)  
+- `usuario_id` (FK → usuarios)  
+- `calificacion` (1 a 5)  
+- `opinion`  
+- `fecha_reseña`
 
 ---
 
-## 🎯 Tablas Opcionales para Escalabilidad
+## 📥 Inserciones de Ejemplo
 
-### Expansiones
-- `id_expansion` (PK)
-- `nombre`
-- `descripcion`
-- `fecha_lanzamiento`
+```sql
+-- Usuarios
+INSERT INTO usuarios (nombre, apellido, email, contraseña, celular)
+VALUES 
+('Roboute', 'Guilliman', 'guilliman@imperium.com', 'ultramarine123', '1122334455'),
+('Abaddon', 'El Saqueador', 'abaddon@chaos.net', 'warmaster666', '1199887766'),
+('Inquisidora', 'Greyfax', 'greyfax@ordohereticus.org', 'purgeHeretics!', '1133445566');
 
-### Usuarios (Administración)
-- `id_usuario` (PK)
-- `nombre`
-- `email`
-- `rol` (admin, empleado)
-- `fecha_ingreso`
+-- Roles
+INSERT INTO roles (rol_nombre)
+VALUES ('Cliente'), ('Administrador'), ('Vendedor');
 
-### Historial_Stock
-- `id_historial` (PK)
-- `id_producto` (FK)
-- `fecha`
-- `tipo_movimiento` (entrada, salida)
-- `cantidad`
-- `motivo` (compra, ajuste, devolución)
+-- Categorías
+INSERT INTO categorias (nombre_de_categoria, descripcion)
+VALUES 
+('Miniaturas', 'Figuras coleccionables de ejércitos del universo Warhammer 40K'),
+('Accesorios', 'Dados, reglas, medidores y otros elementos para jugar'),
+('Libros', 'Novelas y códices oficiales del lore de Warhammer 40K');
 
-### Lista_Deseos
-- `id_lista` (PK)
-- `id_cliente` (FK)
-- `id_producto` (FK)
-- `fecha_agregado`
+-- Productos
+INSERT INTO productos (vendedor_id, categorias_id, nombres_productos, descripcion, precio)
+VALUES 
+(1, 1, 'Ultramarines Primaris Squad', 'Unidad de élite de los Marines Espaciales', 49.99000),
+(2, 1, 'Chaos Space Marines', 'Tropa básica de los Marines del Caos', 44.50000),
+(3, 2, 'Dados Imperiales', 'Set de dados temáticos del Imperio', 15.00000),
+(1, 3, 'Codex: Adeptus Astartes', 'Libro de reglas y trasfondo de los Marines Espaciales', 35.00000);
 
-### Ofertas
-- `id_oferta` (PK)
-- `id_producto` (FK)
-- `descripcion`
-- `porcentaje_descuento`
-- `fecha_inicio`
-- `fecha_fin`
+-- Inventario
+INSERT INTO inventario (producto_id, cantidad_disponible)
+VALUES (1, 10), (2, 8), (3, 25), (4, 12);
+
+-- Órdenes
+INSERT INTO ordenes (usuario_id, total, estado)
+VALUES (1, 84.99, 'pagada'), (2, 44.50, 'pendiente'), (3, 35.00, 'completada');
+
+-- Detalle de Órdenes
+INSERT INTO detalle_orden (orden_id, producto_id, cantidad, precio_unitario)
+VALUES 
+(1, 1, 1, 49.99),
+(1, 3, 1, 15.00),
+(2, 2, 1, 44.50),
+(3, 4, 1, 35.00);
+
+-- Pagos
+INSERT INTO pagos (orden_id, monto, metodo_de_pago, estado)
+VALUES 
+(1, 84.990, 'tarjeta_de_credito', 'aprobado'),
+(2, 44.500, 'efectivo', 'pendiente'),
+(3, 35.000, 'billetera_virtual', 'aprobado');
+
+-- Envíos
+INSERT INTO envios (orden_id, direccion_envio, ciudad, provincia, codigo_postal)
+VALUES 
+(1, 'Av. Terra 40K #123', 'Macragge', 'Ultramar', '0001'),
+(2, 'Fortaleza Negra S/N', 'Cadia', 'Segmentum Obscurus', '6666'),
+(3, 'Templo de la Purga #77', 'Terra', 'Segmentum Solar', '1000');
+
+-- Comentarios
+INSERT INTO comentarios (producto_id, usuario_id, calificacion, opinion)
+VALUES 
+(1, 2, 5, 'Excelente calidad, aunque odio a los Ultramarines.'),
+(2, 1, 4, 'Buen detalle, pero el caos no es lo mío.'),
+(4, 3, 5, 'El códex está muy completo y bien ilustrado.');
+```
 
 ---
 
-## 🧠 Ideas Adicionales
+## 🧠 Ideas Futuras
 
-- Sistema de fidelidad con acumulación y redención de puntos.
-- Notificaciones para lanzamientos, reposiciones o descuentos.
-- Sistema de tags para categorizar productos por estilo o tipo de juego.
-- Soporte multilenguaje para internacionalización.
+- Sistema de fidelidad con puntos acumulables por compra.  
+- Lista de deseos por usuario.  
+- Ofertas temporales con descuentos por producto.  
+- Historial de movimientos de inventario.  
+- Notificaciones por email para lanzamientos y promociones.  
+- Soporte multilenguaje para expansión internacional.
 
 ---
 
-## 📌 Objetivo
+## 🎯 Objetivo
 
-Crear una base de datos robusta, escalable y especializada para una tienda de Warhammer 40K que permita una gestión eficiente de productos, clientes, ventas y promociones, mejorando la experiencia del usuario y facilitando la administración interna.
+Diseñar una base de datos sólida, escalable y especializada para una tienda temática de Warhammer 40K que permita una gestión eficiente de productos, usuarios, ventas y logística, mejorando la experiencia del cliente y facilitando la administración del negocio.
 
-
+---
