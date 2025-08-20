@@ -1,5 +1,5 @@
-create database e_comm3rce;
-use e_comm3rce;
+create database ecommerce_warhammer_40k;
+use ecommerce_warhammer_40k;
 
 create table usuarios(
 usuario_id int not null auto_increment primary key,
