@@ -86,7 +86,7 @@ on delete cascade
  fecha_de_pago datetime default now(),
  monto decimal(10,3) not null,
  metodo_de_pago enum('tarjeta_de_credito', 'tarjeta_de_debito', 'billetera_virtual', 'efectivo') not null,
- estado enum ('pendiente', 'aprobado', 'rechazado') default 'pendiente',
+ estado_pago enum ('pendiente', 'aprobado', 'rechazado') default 'pendiente',
  foreign key (orden_id) references ordenes(orden_id)
  on update cascade
  on delete cascade
@@ -103,7 +103,7 @@ on delete cascade
  pais varchar(70) not null default 'ARGENTINA',
  fecha_de_envio datetime default now(),
  fecha_de_entrega_estimada date,
- estado enum('pendiente', 'en camino', 'entregado', 'cancelado') default 'pendiente',
+ estado_envio enum('pendiente', 'en camino', 'entregado', 'cancelado') default 'pendiente',
  foreign key (orden_id) references ordenes(orden_id)
 on update cascade
 on delete cascade
